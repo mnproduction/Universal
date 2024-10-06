@@ -111,7 +111,10 @@ cython_debug/
 Thumbs.db
 
 # ChromeDriver
-webdriver/
+webdriver/chromedriver.exe
+
+# Selenium Data
+crawler/data/selenium/
 
 # Output
 output/
