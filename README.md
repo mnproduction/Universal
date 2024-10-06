@@ -144,6 +144,16 @@ Contributions are welcome! To contribute:
 
 Please ensure your code adheres to the project's coding standards and include relevant tests.
 
+## Credits and Thanks
+
+Special thanks to:
+
+- **Reda Marzouk**
+  - 💼 LinkedIn: [reda-marzouk-rpa](https://www.linkedin.com/in/reda-marzouk-rpa/)
+  - 🤖 YouTube: [@redamarzouk](https://www.youtube.com/@redamarzouk)
+
+We extend our heartfelt gratitude to Reda Marzouk for his invaluable contributions and inspiration to this project. His expertise in RPA and web scraping has been instrumental in shaping the direction and capabilities of this Universal Web Scraper.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
@@ -152,8 +162,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 For any questions or suggestions, feel free to reach out:
 
-- **Email**: [your.email@example.com](mailto:your.email@example.com)
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **Email**: [your.email@example.com](mailto:my.novosolov@gmail.com)
+- **GitHub**: [@yourusername](https://github.com/mnproduction)
 
 ---
 
