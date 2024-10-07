@@ -14,7 +14,9 @@ class Config:
         self.DEBUG_STATE_FILE = False
 
 class ModelConfig:
-    def __init__(self, data: str):
+    def __init__(self, data: str, model: str = "gpt-4o-mini"):
+        self.data = data
+        self.model = model
         self.system_message = """You are an intelligent text extraction and conversion assistant. Your task is to extract structured information 
                         from the given text and convert it into a pure JSON format. The JSON should contain only the structured data extracted from the text, 
                         with no additional commentary, explanations, or extraneous information. 
@@ -39,14 +41,23 @@ class SeleniumConfig:
 
 class Pricing:
     def __init__(self):
-        self.gpt_4o_mini = {
-            "input": 0.150 / 1_000_000,
-            "output": 0.600 / 1_000_000
+        self.data = {
+            "gpt-4o-mini": {
+                "input": 0.150 / 1_000_000,
+                "output": 0.600 / 1_000_000
+            },
+            "gpt-4o": {
+                "input": 2.5 / 1_000_000,
+                "output": 10 / 1_000_000
+            }
         }
-        self.gpt_4o = {
-            "input": 2.5 / 1_000_000,
-            "output": 10 / 1_000_000
-        }
+    
+    def __getitem__(self, model: str) -> dict:
+        if model in self.data:
+            return self.data[model]
+        else:
+            raise ValueError(f"Pricing data for model '{model}' not found.")
+
 
 config = Config()
 

@@ -1,5 +1,6 @@
 # core/model.py
 
+import json
 from typing import List, Type
 
 from openai import OpenAI
@@ -9,12 +10,14 @@ import tiktoken
 from settings.config import ModelConfig, config, pricing
 
 class DynamicListingModel(BaseModel):
-    def create(self, field_names: List[str]) -> Type[BaseModel]:
+    @staticmethod
+    def create(field_names: List[str]) -> Type[BaseModel]:
         field_definitions = {field: (str, ...) for field in field_names}
         return create_model("DynamicListingModel", **field_definitions)
 
 class DynamicListingContainerModel(BaseModel):
-    def create(self, listing_model: Type[BaseModel]) -> Type[BaseModel]:
+    @staticmethod
+    def create(listing_model: Type[BaseModel]) -> Type[BaseModel]:
         return create_model("DynamicListingContainerModel", listings=(List[listing_model], ...))
 
 class Trimmer():
@@ -33,13 +36,13 @@ class Trimmer():
 class Formatter():
     def __init__(self, 
                  data: str, 
-                 dynamic_listing_container_model: Type[DynamicListingContainerModel], 
+                 dynamic_listing_container_model: Type[BaseModel], 
                  model: str = "gpt-4o-mini", 
                  ):
         self.data = data
         self.model = model
-        self.model_config = ModelConfig(data)
-        self.dynamic_listing_container_model_class = dynamic_listing_container_model  # Store the class type
+        self.model_config = ModelConfig(data, model)
+        self.dynamic_listing_container_model = dynamic_listing_container_model  # Store the class type
 
     def format_data(self) -> str:
         client = OpenAI(api_key=config.OPENAI_API_KEY)
@@ -47,21 +50,24 @@ class Formatter():
         system_message = self.model_config.system_message
         user_message = self.model_config.user_message
 
-        # Create an instance of the dynamic listing container model
-        dynamic_listing_container_instance = self.dynamic_listing_container_model_class()  # Instantiate the model class
-
-
         completion = client.beta.chat.completions.parse(
             model=self.model,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message},
             ],
-            response_format=dynamic_listing_container_instance
+            response_format=self.dynamic_listing_container_model
         )
 
         return completion.choices[0].message.parsed
 
+    def get_text(self, data) -> str:
+        if isinstance(data, dict):
+            return json.dumps(data)
+        elif isinstance(data, BaseModel):
+            return json.dumps(data.model_dump())
+        else:
+            raise ValueError("Unsupported data type")
 
     def calculate_cost(self, input_text: str, output_text: str, model: str = "gpt-4o-mini") -> float:
         encoder = tiktoken.encoding_for_model(model)

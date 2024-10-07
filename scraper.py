@@ -26,13 +26,13 @@ if __name__ == "__main__":
         raw_processor.write(markdown)
 
         # Create the dynamic listing model
-        dynamic_listing_model = DynamicListingModel(fields=fields)
+        DynamicListingModelInstance = DynamicListingModel.create(fields)
 
         # Create the container model that holds a list of the dynamic listing models
-        dynamic_listings_container = DynamicListingContainerModel(dynamic_listing_model=dynamic_listing_model)
+        DynamicListingsContainer = DynamicListingContainerModel.create(DynamicListingModelInstance)
         
         # Format data
-        formatter = Formatter(markdown, dynamic_listings_container)
+        formatter = Formatter(markdown, DynamicListingsContainer)
         formatted_data = formatter.format_data()
         
         # Save formatted data
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         json_processor.write(formatted_data)
 
         # Convert formatted_data back to text for token counting
-        formatted_data_text = json.dumps(formatted_data.dict()) 
+        formatted_data_text = formatter.get_text(formatted_data) 
         
         
         # Automatically calculate the token usage and cost for all input and output
