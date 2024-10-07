@@ -1,4 +1,5 @@
-import json
+# scraper.py
+
 from crawler.selenium_crawler import SeleniumCrawler
 from handler.converter import HtmlToMarkdownConverter
 from handler.fileprocessor import JsonProcessor, RawProcessor
@@ -18,8 +19,8 @@ if __name__ == "__main__":
         crawler = SeleniumCrawler()
         raw_html = crawler.get_html(url)
 
-        converter = HtmlToMarkdownConverter(raw_html)
-        markdown = converter.convert()
+        converter = HtmlToMarkdownConverter()
+        markdown = converter.convert(raw_html)
         
         # Save raw data
         raw_processor = RawProcessor()
@@ -32,8 +33,8 @@ if __name__ == "__main__":
         DynamicListingsContainer = DynamicListingContainerModel.create(DynamicListingModelInstance)
         
         # Format data
-        formatter = Formatter(markdown, DynamicListingsContainer)
-        formatted_data = formatter.format_data()
+        formatter = Formatter()
+        formatted_data = formatter.format_data(markdown, DynamicListingsContainer)
         
         # Save formatted data
         json_processor = JsonProcessor()

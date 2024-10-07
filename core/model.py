@@ -34,17 +34,11 @@ class Trimmer():
         return text
 
 class Formatter():
-    def __init__(self, 
-                 data: str, 
-                 dynamic_listing_container_model: Type[BaseModel], 
-                 model: str = "gpt-4o-mini", 
-                 ):
-        self.data = data
+    def __init__(self, model: str = "gpt-4o-mini"):
         self.model = model
-        self.model_config = ModelConfig(data, model)
-        self.dynamic_listing_container_model = dynamic_listing_container_model  # Store the class type
 
-    def format_data(self) -> str:
+    def format_data(self, data: str, dynamic_listing_container_model: Type[BaseModel]) -> str:
+        self.model_config = ModelConfig(data, self.model)
         client = OpenAI(api_key=config.OPENAI_API_KEY)
 
         system_message = self.model_config.system_message
@@ -56,7 +50,7 @@ class Formatter():
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message},
             ],
-            response_format=self.dynamic_listing_container_model
+            response_format=dynamic_listing_container_model
         )
 
         return completion.choices[0].message.parsed
